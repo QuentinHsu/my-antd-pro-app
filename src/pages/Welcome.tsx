@@ -2,7 +2,9 @@ import { PageContainer } from '@ant-design/pro-components';
 import { useModel } from '@umijs/max';
 import { Card, theme } from 'antd';
 import React from 'react';
-
+import { observer } from 'mobx-react';
+import { useStore } from '../contexts/StoreContext';
+import WelcomeItem from '@/components/Welcome/WelcomeItem';
 /**
  * 每个单独的卡片，为了复用样式抽成了组件
  * @param param0
@@ -17,6 +19,7 @@ const InfoCard: React.FC<{
   const { useToken } = theme;
 
   const { token } = useToken();
+  const { userStore } = useStore();
 
   return (
     <div
@@ -62,7 +65,7 @@ const InfoCard: React.FC<{
             paddingBottom: 8,
           }}
         >
-          {title}
+          {title} - {userStore.username}
         </div>
       </div>
       <div
@@ -83,9 +86,12 @@ const InfoCard: React.FC<{
   );
 };
 
-const Welcome: React.FC = () => {
+const Welcome: React.FC = observer(() => {
   const { token } = theme.useToken();
   const { initialState } = useModel('@@initialState');
+  const { userStore } = useStore();
+  userStore.setUsername(initialState?.currentUser?.name || '');
+
   return (
     <PageContainer>
       <Card
@@ -114,7 +120,7 @@ const Welcome: React.FC = () => {
               color: token.colorTextHeading,
             }}
           >
-            欢迎使用 Ant Design Pro
+            hi! {userStore.username} 欢迎使用 Ant Design Pro
           </div>
           <p
             style={{
@@ -157,8 +163,9 @@ const Welcome: React.FC = () => {
           </div>
         </div>
       </Card>
+      <WelcomeItem />
     </PageContainer>
   );
-};
+});
 
 export default Welcome;

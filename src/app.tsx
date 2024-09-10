@@ -10,6 +10,7 @@ import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 import React from 'react';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+import { StoreProvider } from './contexts/StoreContext';
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -47,7 +48,7 @@ export async function getInitialState(): Promise<{
   };
 }
 
-// ProLayout 支持的api https://procomponents.ant.design/components/layout
+// ProLayout 支持的 api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
     actionsRender: () => [<Question key="doc" />, <SelectLang key="SelectLang" />],
@@ -105,7 +106,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       // if (initialState?.loading) return <PageLoading />;
       return (
         <>
-          {children}
+          <StoreProvider>{children}</StoreProvider>
+
           {isDev && (
             <SettingDrawer
               disableUrlParams
